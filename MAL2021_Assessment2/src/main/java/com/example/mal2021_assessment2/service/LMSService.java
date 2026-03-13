@@ -22,6 +22,18 @@ public class LMSService {
                 .collect(Collectors.toList());
     }
 
+    // List all courses a specific student is enrolled in
+    public List<Course> getCoursesForStudent(Long studentId){
+        Set<String> enrolledCourseIds = lmsRepository.getAllEnrollments().stream()
+                .filter(e -> e.getStudentId().equals(studentId))
+                .map(Enrollment::getCourseId)
+                .collect(Collectors.toSet());
+
+        return lmsRepository.getAllCourses().stream()
+                .filter(c -> enrolledCourseIds.contains(c.getCourseId()))
+                .collect(Collectors.toList());
+    }
+
     // List Active Students
     public List<Student> getActiveStudents(){
         Set<Long> activeStudentIds = lmsRepository.getAllEnrollments().stream()
@@ -54,7 +66,7 @@ public class LMSService {
                 .orElse(null);
 
         return lmsRepository.getAllInstructors().stream()
-                .filter(i -> i.getId().equals(topId))
+                .filter(i -> i.getInstructorId().equals(topId))
                 .findFirst().orElse(null);
     }
 
@@ -71,7 +83,7 @@ public class LMSService {
                 .collect(Collectors.toSet());
 
         return lmsRepository.getAllInstructors().stream()
-                .filter(i -> !activeInstructorIds.contains(i.getId()))
+                .filter(i -> !activeInstructorIds.contains(i.getInstructorId()))
                 .collect(Collectors.toList());
     }
 }

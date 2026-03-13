@@ -29,7 +29,25 @@ public class LMSServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Test 1: Get Active Students
+    // Test 1: Get Student Enrollments
+    @Test
+    void testGetCoursesForStudent(){
+        Long studentId = 101L;
+        Course course = new Course("MAL2021", "Software Dev", 1L);
+        Enrollment enrollment = new Enrollment(101L, "MAL2021");
+
+        when(lmsRepository.getAllCourses()).thenReturn(Arrays.asList(course));
+        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList(enrollment));
+
+        // Act
+        List<Course> result = lmsService.getCoursesForStudent(studentId);
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Software Dev", result.get(0).getTitle());
+    }
+
+    // Test 2: Get Active Students
     @Test
     void testGetActiveStudents(){
         // Dummy Data 🧍
@@ -49,15 +67,15 @@ public class LMSServiceTest {
         assertEquals("Alice Mice", result.get(0).getName());
     }
 
-    // Test 2: Get most Active Instructor
+    // Test 3: Get most Active Instructor
     @Test
     void testGetMostActiveInstructor(){
         // Dummy data 🧍
-        Instructor instructor1 = new Instructor(001L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
-        Instructor instructor2 = new Instructor(002L, "Prof. Michael Myers", "michael.myers@college.edu.my");
+        Instructor instructor1 = new Instructor(1L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
+        Instructor instructor2 = new Instructor(2L, "Prof. Michael Myers", "michael.myers@college.edu.my");
 
-        Course aiCourse = new Course("MAL2019", "Artificial Intelligence", 001L);
-        Course softwareCourse = new Course("MAL2021", "Software Development Tools & Practices", 002L);
+        Course aiCourse = new Course("MAL2019", "Artificial Intelligence", 1L);
+        Course softwareCourse = new Course("MAL2021", "Software Development Tools & Practices", 2L);
 
         Enrollment enrollment1 = new Enrollment(101L, "MAL2019");
         Enrollment enrollment2 = new Enrollment(102L, "MAL2021");
@@ -74,14 +92,14 @@ public class LMSServiceTest {
         assertEquals("Prof. Michael Myers", result.getName());
     }
 
-    // Test 3: Get Instructors with no enrollments
+    // Test 4: Get Instructors with no enrollments
     @Test
     void testGetInstructorsWithNoEnrollments(){
-        Instructor instructor1 = new Instructor(001L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
-        Instructor instructor2 = new Instructor(002L, "Prof. Michael Myers", "michael.myers@college.edu.my");
+        Instructor instructor1 = new Instructor(1L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
+        Instructor instructor2 = new Instructor(2L, "Prof. Michael Myers", "michael.myers@college.edu.my");
 
-        Course aiCourse = new Course("MAL2019", "Artificial Intelligence", 001L);
-        Course softwareCourse = new Course("MAL2021", "Software Development Tools & Practices", 001L);
+        Course aiCourse = new Course("MAL2019", "Artificial Intelligence", 1L);
+        Course softwareCourse = new Course("MAL2021", "Software Development Tools & Practices", 1L);
 
         Enrollment enrollment1 = new Enrollment(101L, "MAL2021");
 
@@ -97,7 +115,8 @@ public class LMSServiceTest {
         assertTrue(result.stream().anyMatch(i -> i.getName().equals("Prof. Michael Myers")));
     }
 
-    // Test 4: Empty data
+    // Test 5: Empty data
+    @Test
     void testGetMostActiveInstructor_EmptyData(){
         when(lmsRepository.getAllInstructors()).thenReturn(Arrays.asList());
         when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList());
