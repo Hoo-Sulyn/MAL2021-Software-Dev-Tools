@@ -1,8 +1,11 @@
 package com.example.mal2021_assessment2.service;
 
 import com.example.mal2021_assessment2.model.*;
-import com.example.mal2021_assessment2.repository.LMSRepository;
 
+import com.example.mal2021_assessment2.repository.LMSCourseRepository;
+import com.example.mal2021_assessment2.repository.LMSEnrollmentRepository;
+import com.example.mal2021_assessment2.repository.LMSInstructorRepository;
+import com.example.mal2021_assessment2.repository.LMSStudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,16 +13,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class LMSServiceTest {
-    @Mock
-    private LMSRepository lmsRepository;
+    @Mock private LMSCourseRepository courseRepository;
+    @Mock private LMSStudentRepository studentRepository;
+    @Mock private LMSInstructorRepository instructorRepository;
+    @Mock private LMSEnrollmentRepository enrollmentRepository;
 
     @InjectMocks
     private LMSService lmsService;
@@ -36,8 +41,8 @@ public class LMSServiceTest {
         Course course = new Course("MAL2021", "Software Dev", 1L);
         Enrollment enrollment = new Enrollment(101L, "MAL2021");
 
-        when(lmsRepository.getAllCourses()).thenReturn(Arrays.asList(course));
-        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList(enrollment));
+        when(enrollmentRepository.findByStudentId(studentId)).thenReturn(Arrays.asList(enrollment));
+        when(courseRepository.findAllById(anyList())).thenReturn(Arrays.asList(course));
 
         // Act
         List<Course> result = lmsService.getCoursesForStudent(studentId);
@@ -56,8 +61,8 @@ public class LMSServiceTest {
 
         Enrollment enrollment1 = new Enrollment(101L, "MAL2021");
 
-        when(lmsRepository.getAllStudents()).thenReturn(Arrays.asList(student1, student2));
-        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList(enrollment1));
+        when(enrollmentRepository.findAll()).thenReturn(Arrays.asList(enrollment1));
+        when(studentRepository.findAllById(anyList())).thenReturn(Arrays.asList(student1));
 
         // Act
         List<Student> result = lmsService.getActiveStudents();
@@ -81,9 +86,9 @@ public class LMSServiceTest {
         Enrollment enrollment2 = new Enrollment(102L, "MAL2021");
         Enrollment enrollment3 = new Enrollment(103L, "MAL2021");
 
-        when(lmsRepository.getAllInstructors()).thenReturn(Arrays.asList(instructor1, instructor2));
-        when(lmsRepository.getAllCourses()).thenReturn(Arrays.asList(aiCourse, softwareCourse));
-        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList(enrollment1, enrollment2, enrollment3));
+        when(enrollmentRepository.findAll()).thenReturn(Arrays.asList(enrollment1, enrollment2, enrollment3));
+        when(courseRepository.findAll()).thenReturn(Arrays.asList(aiCourse, softwareCourse));
+        when(instructorRepository.findById(2L)).thenReturn(Optional.of(instructor2));
 
         // Act
         Instructor result = lmsService.getMostActiveInstructor();
@@ -98,14 +103,13 @@ public class LMSServiceTest {
         Instructor instructor1 = new Instructor(1L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
         Instructor instructor2 = new Instructor(2L, "Prof. Michael Myers", "michael.myers@college.edu.my");
 
-        Course aiCourse = new Course("MAL2019", "Artificial Intelligence", 1L);
-        Course softwareCourse = new Course("MAL2021", "Software Development Tools & Practices", 1L);
+        Course softwareCourse = new Course("MAL2021", "Software Developmen", 1L);
 
         Enrollment enrollment1 = new Enrollment(101L, "MAL2021");
 
-        when(lmsRepository.getAllInstructors()).thenReturn(Arrays.asList(instructor1, instructor2));
-        when(lmsRepository.getAllCourses()).thenReturn(Arrays.asList(aiCourse, softwareCourse));
-        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList(enrollment1));
+        when(enrollmentRepository.findAll()).thenReturn(Arrays.asList(enrollment1));
+        when(courseRepository.findAll()).thenReturn(Arrays.asList(softwareCourse));
+        when(instructorRepository.findAll()).thenReturn(Arrays.asList(instructor1, instructor2));
 
         // Act
         List<Instructor> result = lmsService.getInstructorsWithNoEnrollments();
@@ -118,8 +122,8 @@ public class LMSServiceTest {
     // Test 5: Empty data
     @Test
     void testGetMostActiveInstructor_EmptyData(){
-        when(lmsRepository.getAllInstructors()).thenReturn(Arrays.asList());
-        when(lmsRepository.getAllEnrollments()).thenReturn(Arrays.asList());
+        when(enrollmentRepository.findAll()).thenReturn(Arrays.asList());
+        when(courseRepository.findAll()).thenReturn(Arrays.asList());
 
         // Act
         Instructor result = lmsService.getMostActiveInstructor();
