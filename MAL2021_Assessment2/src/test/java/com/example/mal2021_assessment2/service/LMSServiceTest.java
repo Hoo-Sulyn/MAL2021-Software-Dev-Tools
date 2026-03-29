@@ -103,7 +103,7 @@ public class LMSServiceTest {
         Instructor instructor1 = new Instructor(1L, "Dr. Natalie Ouellette", "natalie.ouellette@college.edu.my");
         Instructor instructor2 = new Instructor(2L, "Prof. Michael Myers", "michael.myers@college.edu.my");
 
-        Course softwareCourse = new Course("MAL2021", "Software Developmen", 1L);
+        Course softwareCourse = new Course("MAL2021", "Software Development", 1L);
 
         Enrollment enrollment1 = new Enrollment(101L, "MAL2021");
 

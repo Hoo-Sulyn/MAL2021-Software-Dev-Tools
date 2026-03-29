@@ -40,7 +40,7 @@ public class LMSServiceIntegrationTest {
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Alice not found in database!"));
 
-        // 3. Use that REAL ID for the enrollment check
+        // 3. Use that real ID for the enrollment check
         List<Enrollment> aliceEnrollments = lmsService.getStudentEnrollments(realAliceId);
 
         assertNotNull(aliceEnrollments);
@@ -50,12 +50,12 @@ public class LMSServiceIntegrationTest {
 
     @Test
     void testRetrieveMostActiveAndInactiveInstructors() {
-        // 1. Test Most Active (In your seeder, Dr. Smith (501) has 2 courses/enrollments)
+        // 1. Test Most Active
         Instructor mostActive = lmsService.getMostActiveInstructor();
         assertNotNull(mostActive);
         assertEquals("Dr. Smith", mostActive.getName());
 
-        // 2. Test Instructors with No Enrollments (Prof. Jones (502) has a course but no students yet)
+        // 2. Test Instructors with No Enrollments
         List<Instructor> inactive = lmsService.getInstructorsWithNoEnrollments();
         assertNotNull(inactive);
         assertFalse(inactive.isEmpty(), "Should find at least one instructor with no enrollments");

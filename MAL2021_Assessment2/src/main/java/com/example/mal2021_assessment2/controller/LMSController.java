@@ -27,12 +27,6 @@ public class LMSController {
         this.lmsService = lmsService;
     }
 
-    // Retrieve Student Enrollments
-//    @GetMapping("/enrollments/{studentId}")
-//    public List<Enrollment> getStudentEnrollments(@PathVariable Long studentId){
-//        return lmsService.getStudentEnrollments(studentId);
-//    }
-
     @GetMapping("/enrollments/{studentId}")
     public ResponseEntity<Object> getStudentEnrollments(@PathVariable Long studentId) {
         // 1. Check if student exists
