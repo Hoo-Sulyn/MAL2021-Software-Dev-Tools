@@ -60,7 +60,7 @@ public class LMSDashboard extends JFrame {
         enrollmentHeader.setFont(new Font("Segoe UI", Font.BOLD, 14));
         enrollmentHeader.setForeground(new Color(41, 128, 185));
 
-        // Since you don't have EnrollmentID, we show Course details
+        // Show Course details
         enrollmentModel = new DefaultTableModel(new String[]{"Course ID", "Course Name", "Instructor"}, 0);
         JTable enrollmentTable = new JTable(enrollmentModel);
         enrollmentTable.setRowHeight(25);
@@ -90,13 +90,10 @@ public class LMSDashboard extends JFrame {
 
         // Logic for the Clear Button
         btnClear.addActionListener(e -> {
-            // 1. Unselect the row in the top table
             studentTable.clearSelection();
 
-            // 2. Wipe the bottom table data
             enrollmentModel.setRowCount(0);
 
-            // 3. Optional: Add a placeholder row so it's not just a blank white box
             enrollmentModel.addRow(new Object[]{"-", "Select a student above", "-"});
         });
 
@@ -112,7 +109,6 @@ public class LMSDashboard extends JFrame {
     private void refreshStudentTable() {
         studentModel.setRowCount(0);
 
-        // Switch from getActiveStudents() to getAllStudents()
         List<Student> students = lmsService.getAllStudents();
 
         for (Student s : students) {
@@ -132,7 +128,6 @@ public class LMSDashboard extends JFrame {
 
         for (Enrollment en : enrollments) {
             // 2. Use the courseId from the enrollment to find the actual Course details
-            // Note: You may need to inject LMSCourseRepository and LMSInstructorRepository into your GUI class
             courseRepo.findById(en.getCourseId()).ifPresent(course -> {
 
                 // 3. Find the Instructor name using the instructorId from the course
@@ -140,7 +135,7 @@ public class LMSDashboard extends JFrame {
                         .map(Instructor::getName)
                         .orElse("Unknown");
 
-                // 4. Add the "Rich" data to the table row
+                // 4. Add the data to the table row
                 enrollmentModel.addRow(new Object[]{
                         course.getCourseId(),
                         course.getTitle(),

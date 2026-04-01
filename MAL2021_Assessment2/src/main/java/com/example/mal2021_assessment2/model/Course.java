@@ -7,12 +7,12 @@ import jakarta.persistence.Table;
 @Entity
 public class Course {
     @Id
-    private String courseId; // Assuming code is your primary key
+    private String courseId;
 
     private String title;
     private Long instructorId;
 
-    // IMPORTANT: JPA requires a no-args constructor
+    // Constructor
     public Course() {}
 
     public Course(String courseId, String title, Long instructorId) {
